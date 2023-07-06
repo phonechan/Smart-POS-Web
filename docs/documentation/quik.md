@@ -1,21 +1,21 @@
-### 快速接入
+## 快速接入
 为了方便快速接入，提供了demo供接入参考
 [demo下载](http://hd2-prod-smartpos.oss-cn-shanghai.aliyuncs.com/apkMgt/2020-01-07/pos-demo.zip)
 
-1. 本 SDK 已使用 jcenter 托管，配置如下
+* 本 SDK 已使用 mavenCentral 托管，配置如下
 
 ```gradle
 gradle:
-    implementation 'com.cardinfolink.smart.pos:PosSDK:2.5.2'
+    implementation 'com.cardinfolink.smart.pos:PosSDK:2.6.3'
 ```
 
-2. 如果想使用讯联集成的结算UI和逻辑，请配置
+* 如果想使用讯联集成的结算UI和逻辑，请配置
 
 ```gradle
 gradle:
     implementation 'com.cardinfolink.smart.pos:SDK-ZaiHui:1.1.1'
 ```
-### 初始化（连接POS机硬件）
+## 初始化（连接POS机硬件）
 
 使用 N900 智能 POS 机器, 首先需要连接 POS 机硬件, 使用 SDK 提供的 `connect` 方法连接。
 建议在 `Application` 的 `onCreate` 方法中进行连接。
@@ -36,7 +36,7 @@ gradle:
 除了在 `Application` 的 `onCreate` 方法中进行连接，建议在每个可能调用设备刷卡、加密、打印的activity onCreat方法中再调用 CILSDK.connect(this)进行连接，
 保证使用过程中设备连接不断开；另外推荐在ActivityLifecycleCallbacks中处理设备连接。
 
-### 激活POS机 
+## 激活POS机 
 完整的激活环节分为三步，分别是：激活，终端参数下载，终端密钥下载，三步都成功，表示激活成功，激活成功之后才能正常使用后面的交易流程。  
 
 ![](../img/activeprocess.png)  
@@ -179,7 +179,7 @@ CILSDK.getMerchantInfo(HashUtils.encryptActiveCode(authCode), true, new Callback
     });
 ```  
 
-### 签到
+## 签到
 签到其实也就是更新工作密钥的一个过程 (`下载工作密钥+装载工作密钥` ),讯联网关平台要求应用需要每天签到一次。
 
 ```
@@ -195,7 +195,7 @@ CILSDK.getMerchantInfo(HashUtils.encryptActiveCode(authCode), true, new Callback
         }
     });
 ```    
-### 银行卡交易
+## 银行卡交易
 由于银行卡交易逻辑有点复杂,讯联提供了一个 `BaseCardActivity` 基础类,你只需要继承这个类便可以做银行卡类的交易了。具体使用方法可以见 demo 
 里的 `CommonCardHandlerActivity` 类。下面给个大概说明:
 
@@ -229,6 +229,24 @@ CILSDK.getMerchantInfo(HashUtils.encryptActiveCode(authCode), true, new Callback
 			//如果接入方无需支持DCC，则此方法返回false即可
 			return false;
 		}
+
+        /**
+        * 提供给持卡人选择交易币种
+        *
+        * @param isSuccess
+        * @param cardInfo
+        * @param rateInfo
+        */
+        @Override
+        public void selectCurrency(boolean isSuccess, CardInfo cardInfo, RateInfo rateInfo) {
+            // 1、提供 UI 界面给持卡人选择交易币种
+
+            // 2、选择本币调用
+            // cardReaderHandler(isSuccess, cardInfo.getCardType(), cardInfo, null); //EDC
+
+            // 3、选择外币调用
+            // cardReaderHandler(isSuccess, cardInfo.getCardType(), cardInfo, rateInfo); //DCC
+        }
 		
     
         /**
@@ -269,7 +287,7 @@ CILSDK.getMerchantInfo(HashUtils.encryptActiveCode(authCode), true, new Callback
 			}
 			
 			//3. 在这里面发送银行卡相关的交易(如消费、消费撤销、退货、预授权、预授权撤销、预授权完成、预授权完成撤销、余额查询)
-            //CILSDK.consume(request, cardType, new Callback<CILResponse>() //消费
+            //CILSDK.consume(request, cardType, new Callback<CILResponse>()) //消费
 		}
    
         /**
@@ -761,7 +779,7 @@ transDatetime |String |受卡方所在地日期＋受卡方所在地时 |无|
 transRate |String |持卡人扣帐汇率 |无|
   
     
-### 扫码交易
+## 扫码交易
 
 扫码相关的交易则是不依赖 POS 机器的读卡模块的,但是你需要将`微信`或者`支付宝`的二维码读出来传给扫码消费接口,扫码可以使用第三方库,如 `zxing`。
   
@@ -1121,7 +1139,7 @@ CouponInfo响应报文样例：
 附：最多支持传入9个商品    
 
 
-### 账单查询
+## 账单查询
 
 智能 POS SDK 分别提供了最多30天的`账单列表查询`和`账单统计接口`接口,接口会根据 type 值确定返回`银行卡账单`或`扫码账单`。
 交易成功还是失败最终以返回账单中应答码为准，见[应答码表](https://gongluis.github.io/Smart-POS/attached/sdkAnserCode/) 。
@@ -1306,7 +1324,7 @@ CILSDK.getBillByBatchNumAsync(batchNum, callBackIsOnMainThread, new Callback<CIL
 > SDK 的网络部分使用的是第三方库 `okhttp`,以上账单接口分别还提供了相对应的同步接口 `getBills` 和 `getBillStat` 。
 对于异步接口来说,都会返回一个 `Call` 对象,你可以在应用出错的时候调用 `call.cancel()` 取消这次请求,以免造成内存泄露。  
 
-### 小费 
+## 小费 
 > 注意:
 通过对一笔交易收取小费。  
 小费最多收取交易金额的20%  
@@ -1364,7 +1382,7 @@ CILSDK.getBillByBatchNumAsync(batchNum, callBackIsOnMainThread, new Callback<CIL
         });
 ```  
 
-### 结算
+## 结算
 
 结算需求主要用于每日交易结束时或收银员交接班时,对某段时间内的账款核对。商户每日交易结束后,收银员需要统计并核对所有的交易,核对交易统计准确后结算，打印出结算单。
 结算会涉及到一个概念--`批次号`,我们在前面的交易都会传入一个批次号给 request ,调用结算之后,后续的交易需要将这个批次号加1,因为此批次已经打包结算掉了。
@@ -1393,7 +1411,7 @@ CILSDK.getBillByBatchNumAsync(batchNum, callBackIsOnMainThread, new Callback<CIL
     SettleDaoUtil.getInstance().gotoLiquidation(context)
 ```    
 
-### 打印
+## 打印
 
 
 本模块可用于根据交易信息打印所需的消费票据。接口不仅提供了一套固定格式的小票样式，而且还可以根据需要自定义打印样式。
@@ -1560,7 +1578,7 @@ CILSDK.getBillByBatchNumAsync(batchNum, callBackIsOnMainThread, new Callback<CIL
 ```    
 
 
-### 其他设置
+## 其他设置
 
 考虑到使用 SDK 的时候可能还会有其他需求,比如`获取 POS 机的 SN 号`、`设置密钥索引`等,在这里,我们也提供了一部分接口。
 

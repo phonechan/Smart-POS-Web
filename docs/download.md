@@ -1,9 +1,7 @@
-### **Sample Download**  
+## **Sample Download**  
 最新版接入demo下载：  
 [demo下载](http://hd2-prod-smartpos.oss-cn-shanghai.aliyuncs.com/apkMgt/2020-01-07/pos-demo.zip)
 
-
-> 注意：v2.1.3以及后续sdk版本使用Jcenter管理（`最新版本:2.5.2`）
 
 ```gradle
 compile 'com.cardinfolink.smart.pos:PosSDK:"latestVersion"'
@@ -19,10 +17,11 @@ or
 </dependency>
 ```
 
-### **版本说明(Change Log)**  
+## **版本说明(Change Log)**  
 
 | 版本 | 更新内容 |
 |:--|:--|
+| V2.6.3 |1. DCC or EDC 币种选择；
 | V2.5.2 |1. 扫码接口新增单品券功能； 2. 修改交易查询接口逻辑|
 | V2.4.2 |1. 新增扫码预授权|
 | V2.4.1 |1. 卡交易增加上送地理位置；2. 增加脱机pin交易；3. 修改DCC交易逻辑|
